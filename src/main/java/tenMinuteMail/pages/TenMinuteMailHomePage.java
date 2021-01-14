@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import service.VisibleAjaxElementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class TenMinuteMailHomePage extends DefaultPage {
 
     public TenMinuteMailHomePage(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
+        PageFactory.initElements(new VisibleAjaxElementFactory(driver, 10), this);
     }
 
     public void copyEmail() {
         for (int i = 0; i < 10; i++) {
-            waitForElementToBeClickable(copyEmailLocator).sendKeys(Keys.CONTROL + "c");
+            copyEmailLocator.sendKeys(Keys.CONTROL + "c");
         }
         logger.info("Email address copied");
     }

@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import service.VisibleAjaxElementFactory;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -16,195 +17,186 @@ import java.util.List;
 
 public class GoogleCloudCalculatorPage extends DefaultPage {
 
+    private String currentText;
+
     @FindBy(xpath = "//iframe[starts-with(@src, '/products')]")
-    private WebElement parentFrameLocator;
+    private WebElement parentFrame;
 
     @FindBy(id = "myFrame")
-    private WebElement childFrameLocator;
+    private WebElement childFrame;
 
     @FindBy(id = "input-0")
-    private WebElement searchForAProductLocator;
+    private WebElement searchForAProduct;
 
     @FindBy(xpath = "//span[@class='highlight']/..")
-    private List<WebElement> computeEngineLocator;
+    private List<WebElement> computeEngine;
 
     @FindBy(xpath = "//label[contains(text(), 'Number of instances')]/../input[@name='quantity']")
-    private WebElement numberOfInstancesLocator;
+    private WebElement numberOfInstances;
 
     @FindBy(xpath = "//label[text()='Operating System / Software']/../md-select")
-    private WebElement operatingSystemLocator;
+    private WebElement operatingSystem;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text']")
-    private List<WebElement> requiredOSValueLocator;
+    private List<WebElement> requiredOSValue;
 
     @FindBy(xpath = "//label[text()='Machine Class']/../md-select")
-    private WebElement machineClassLocator;
+    private WebElement machineClass;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text']")
-    private List<WebElement> requiredMachineClassLocator;
+    private List<WebElement> requiredMachineClass;
 
     @FindBy(xpath = "//label[text()='Series']/following-sibling::md-select")
-    private WebElement seriesLocator;
+    private WebElement series;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text ng-binding']")
-    private List<WebElement> requiredSeriesLocator;
+    private List<WebElement> requiredSeries;
 
     @FindBy(xpath = "//label[text()='Machine type']/following-sibling::md-select")
-    private WebElement machineTypeLocator;
+    private WebElement machineType;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text ng-binding']")
-    private List<WebElement> requiredMachineTypeLocator;
+    private List<WebElement> requiredMachineType;
 
     @FindBy(xpath = "//md-checkbox[@ng-model='listingCtrl.computeServer.addGPUs']/" +
             "child::div[starts-with(@class, 'md-container')]")
-    private WebElement addGPUCheckboxLocator;
+    private WebElement addGPUCheckbox;
 
     @FindBy(xpath = "//label[text()='Number of GPUs']/../md-select")
-    private WebElement gpuCountLocator;
+    private WebElement gpuCount;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text ng-binding']")
-    private List<WebElement> requiredGPUCountLocator;
+    private List<WebElement> requiredGPUCount;
 
     @FindBy(xpath = "//label[text()='GPU type']/../md-select")
-    private WebElement gpuTypeLocator;
+    private WebElement gpuType;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text ng-binding']")
-    private List<WebElement> requiredGPUTypeLocator;
+    private List<WebElement> requiredGPUType;
 
     @FindBy(xpath = "//label[text()='Local SSD']/../md-select")
-    private List<WebElement> localSSDLocator;
+    private List<WebElement> localSSD;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text ng-binding']")
-    private List<WebElement> requiredLocalSSDLocator;
+    private List<WebElement> requiredLocalSSD;
 
     @FindBy(xpath = "//label[text()='Datacenter location']/../md-select")
-    private List<WebElement> locationLocator;
+    private List<WebElement> location;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text ng-binding']")
-    private List<WebElement> requiredLocationLocator;
+    private List<WebElement> requiredLocation;
 
     @FindBy(xpath = "//label[text()='Committed usage']/../md-select")
-    private List<WebElement> committedUsageLocator;
+    private List<WebElement> committedUsage;
 
     @FindBy(xpath = "//div[@aria-hidden='false']//div[@class='md-text']")
-    private List<WebElement> requiredCommittedUsageLocator;
+    private List<WebElement> requiredCommittedUsage;
 
-    @FindBy(xpath = "//button[@aria-label='Add to Estimate']")
-    private List<WebElement> addToEstimateButtonLocator;
+    @FindBy(css = "button[ng-click^='listingCtrl.addComputeServer(ComputeEngineForm)']")
+    private WebElement addToEstimateButton;
 
     @FindBy(xpath = "//h2/b[@class='ng-binding']")
-    private WebElement totalEstimateCostLocator;
+    private WebElement totalEstimateCost;
 
     @FindBy(xpath = "//body[@type='marketing']")
-    private WebElement bodyLocator;
+    private WebElement body;
 
     @FindBy(xpath = "//button[@aria-label='Email Estimate']")
-    private WebElement emailEstimateButtonLocator;
+    private WebElement emailEstimateButton;
 
     @FindBy(xpath = "//input[@type='email']")
-    private WebElement inputEmailLocator;
+    private WebElement inputEmail;
 
     @FindBy(xpath = "//md-dialog-actions/child::button")
-    private List<WebElement> sendEmailButtonLocator;
+    private List<WebElement> sendEmailButton;
 
     public GoogleCloudCalculatorPage(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
+        PageFactory.initElements(new VisibleAjaxElementFactory(driver, 10), this);
     }
 
     public void activateComputeEngine() {
-        waitForFrameToBeAvailableAndSwitchToIt(parentFrameLocator);
-        waitForFrameToBeAvailableAndSwitchToIt(childFrameLocator);
-        waitForElementToBeClickable(searchForAProductLocator).click();
-        waitForElementToBeClickable(computeEngineLocator.get(0)).click();
+        driver.switchTo().frame(parentFrame);
+        driver.switchTo().frame(childFrame);
+        searchForAProduct.click();
+        computeEngine.get(0).click();
         logger.info("Compute Engine activated");
     }
 
     public void enterInstancesNumber(Keys keys) {
-        waitForElementToBeClickable(numberOfInstancesLocator);
-        numberOfInstancesLocator.sendKeys(keys);
+        numberOfInstances.sendKeys(keys);
         logger.info("Instances number entered: " + keys.name());
     }
 
     public void enterOSType(int value) {
-        waitForElementToBeClickable(operatingSystemLocator).click();
-        waitForVisibilityOfAllElements(requiredOSValueLocator);
-        waitForElementSelectionStateToBe(requiredOSValueLocator.get(value), false);
-        requiredOSValueLocator.get(value).click();
-        logger.info("OS type entered: " + requiredOSValueLocator.get(value).getText());
+        operatingSystem.click();
+        currentText = requiredOSValue.get(value).getText();
+        requiredOSValue.get(value).click();
+        logger.info("OS type entered: " + currentText);
     }
 
     public void enterMachineClass(int value) {
-        waitForElementToBeClickable(machineClassLocator).click();
-        waitForVisibilityOfAllElements(requiredMachineClassLocator);
-        waitForElementSelectionStateToBe(requiredMachineClassLocator.get(value), false);
-        requiredMachineClassLocator.get(value).click();
-        logger.info("Machine class entered: " + requiredMachineClassLocator.get(value).getText());
+        machineClass.click();
+        currentText = requiredMachineClass.get(value).getText();
+        requiredMachineClass.get(value).click();
+        logger.info("Machine class entered: " + currentText);
     }
 
     public void enterSeries(int value) {
-        waitForElementToBeClickable(seriesLocator).click();
-        waitForVisibilityOfAllElements(requiredSeriesLocator);
-        waitForElementSelectionStateToBe(requiredSeriesLocator.get(value), false);
-        requiredSeriesLocator.get(value).click();
-        logger.info("Series entered: " + requiredSeriesLocator.get(value).getText());
+        series.click();
+        currentText = requiredSeries.get(value).getText();
+        requiredSeries.get(value).click();
+        logger.info("Series entered: " + currentText);
     }
 
     public void enterMachineType(int value) {
-        waitForElementToBeClickable(machineTypeLocator).click();
-        waitForVisibilityOfAllElements(requiredMachineTypeLocator);
-        waitForElementSelectionStateToBe(requiredMachineTypeLocator.get(value), false);
-        requiredMachineTypeLocator.get(value).click();
-        logger.info("Machine type entered: " + requiredMachineTypeLocator.get(value).getText());
+        machineType.click();
+        currentText = requiredMachineType.get(value).getText();
+        requiredMachineType.get(value).click();
+        logger.info("Machine type entered: " + currentText);
     }
 
     public void markAddGPUCheckbox() {
-        waitForElementToBeClickable(addGPUCheckboxLocator).click();
+        addGPUCheckbox.click();
         logger.info("GPU checkbox marked");
     }
 
     public void enterNumberOfGPUs(int value) {
-        waitForElementToBeClickable(gpuCountLocator).click();
-        waitForVisibilityOfAllElements(requiredGPUCountLocator);
-        waitForElementSelectionStateToBe(requiredGPUCountLocator.get(value), false);
-        requiredGPUCountLocator.get(value).click();
-        logger.info("GPUs number entered: " + requiredGPUCountLocator.get(value).getText());
+        gpuCount.click();
+        currentText = requiredGPUCount.get(value).getText();
+        requiredGPUCount.get(value).click();
+        logger.info("GPUs number entered: " + currentText);
     }
 
     public void enterGPUType(int value) {
-        waitForElementToBeClickable(gpuTypeLocator).click();
-        waitForVisibilityOfAllElements(requiredGPUTypeLocator);
-        waitForElementSelectionStateToBe(requiredGPUTypeLocator.get(value), false);
-        requiredGPUTypeLocator.get(value).click();
-        logger.info("GPU type entered: " + requiredGPUTypeLocator.get(value).getText());
+        gpuType.click();
+        currentText = requiredGPUType.get(value).getText();
+        requiredGPUType.get(value).click();
+        logger.info("GPU type entered: " + currentText);
     }
 
     public void enterLocalSSD(int value) {
-        waitForElementToBeClickable(localSSDLocator.get(0)).click();
-        waitForVisibilityOfAllElements(requiredLocalSSDLocator);
-        waitForElementSelectionStateToBe(requiredLocalSSDLocator.get(value), false);
-        requiredLocalSSDLocator.get(value).click();
-        logger.info("Local SSD entered: " + requiredLocalSSDLocator.get(value).getText());
+        localSSD.get(0).click();
+        currentText = requiredLocalSSD.get(value).getText();
+        requiredLocalSSD.get(value).click();
+        logger.info("Local SSD entered: " + currentText);
     }
 
     public void enterDatacenterLocation(int value) {
-        waitForElementToBeClickable(locationLocator.get(0)).click();
-        waitForVisibilityOfAllElements(requiredLocationLocator);
-        waitForElementSelectionStateToBe(requiredLocationLocator.get(value), false);
-        requiredLocationLocator.get(value).click();
-        logger.info("Datacenter location entered: " + requiredLocationLocator.get(value).getText());
+        location.get(0).click();
+        currentText = requiredLocation.get(value).getText();
+        requiredLocation.get(value).click();
+        logger.info("Datacenter location entered: " + currentText);
     }
 
     public void enterCommittedUsage(int value) {
-        waitForElementToBeClickable(committedUsageLocator.get(0)).click();
-        waitForVisibilityOfAllElements(requiredCommittedUsageLocator);
-        waitForElementSelectionStateToBe(requiredCommittedUsageLocator.get(value), false);
-        requiredCommittedUsageLocator.get(value).click();
+        committedUsage.get(0).click();
+        requiredCommittedUsage.get(value).click();
         logger.info("Committed usage entered");
     }
 
     public void addToEstimate() {
-        waitForElementToBeClickable(addToEstimateButtonLocator.get(0)).click();
+        addToEstimateButton.click();
         logger.info("All forms filled & added to estimate");
     }
 
@@ -218,25 +210,25 @@ public class GoogleCloudCalculatorPage extends DefaultPage {
 
     public void emailEstimate() {
         driver.switchTo().activeElement();
-        waitForFrameToBeAvailableAndSwitchToIt(parentFrameLocator);
-        waitForFrameToBeAvailableAndSwitchToIt(childFrameLocator);
-        waitForElementToBeClickable(emailEstimateButtonLocator).click();
+        driver.switchTo().frame(parentFrame);
+        driver.switchTo().frame(childFrame);
+        emailEstimateButton.click();
         logger.info("Email form opened");
     }
 
     public void enterEmail() {
         try {
-            waitForElementToBeClickable(inputEmailLocator).sendKeys((String) Toolkit.getDefaultToolkit()
-                    .getSystemClipboard().getData(DataFlavor.stringFlavor));
-            logger.info("Email entered: " + Toolkit.getDefaultToolkit()
-                    .getSystemClipboard().getData(DataFlavor.stringFlavor));
+            inputEmail.sendKeys((String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                    .getData(DataFlavor.stringFlavor));
+            logger.info("Email entered: " + Toolkit.getDefaultToolkit().getSystemClipboard()
+                    .getData(DataFlavor.stringFlavor));
         } catch (UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }
     }
 
     public void sendEmail() {
-        waitForElementToBeClickable(sendEmailButtonLocator.get(1)).click();
+        sendEmailButton.get(1).click();
         logger.info("Email sent");
     }
 
@@ -247,7 +239,7 @@ public class GoogleCloudCalculatorPage extends DefaultPage {
     }
 
     public String getTotalEstimateCostAsString() {
-        logger.info("Received " + totalEstimateCostLocator.getText());
-        return totalEstimateCostLocator.getText();
+        logger.info("Received " + totalEstimateCost.getText());
+        return totalEstimateCost.getText();
     }
 }

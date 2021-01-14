@@ -1,11 +1,11 @@
 package googleCloud.pages;
 
 import defaultPage.DefaultPage;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import service.VisibleAjaxElementFactory;
 import java.util.List;
 
 public class GoogleCloudHomePage extends DefaultPage {
@@ -17,7 +17,7 @@ public class GoogleCloudHomePage extends DefaultPage {
 
     public GoogleCloudHomePage(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
+        PageFactory.initElements(new VisibleAjaxElementFactory(driver, 10), this);
     }
 
     public void openPage() {
@@ -26,13 +26,13 @@ public class GoogleCloudHomePage extends DefaultPage {
     }
 
     public void enterSearchTerm(String value) {
-        waitForElementToBeClickable(searchInput.get(0)).click();
-        waitForElementToBeClickable(searchInput.get(0)).sendKeys(value);
+        searchInput.get(0).click();
+        searchInput.get(0).sendKeys(value);
         logger.info("Search term entered");
     }
 
     public void runSearch() {
-        waitForElementToBeClickable(searchInput.get(0)).sendKeys(Keys.ENTER);
+        searchInput.get(0).submit();
         logger.info("Search ran");
     }
 }

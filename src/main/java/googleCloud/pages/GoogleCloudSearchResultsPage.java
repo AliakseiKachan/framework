@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import service.VisibleAjaxElementFactory;
 
 public class GoogleCloudSearchResultsPage extends DefaultPage {
 
@@ -14,11 +15,11 @@ public class GoogleCloudSearchResultsPage extends DefaultPage {
 
     public GoogleCloudSearchResultsPage(WebDriver driver) {
         super(driver);
-        PageFactory.initElements(driver, this);
+        PageFactory.initElements(new VisibleAjaxElementFactory(driver, 10), this);
     }
 
     public void goToCalculatorPage() {
-        waitForElementToBeClickable(calculatorPageLocator).click();
+        calculatorPageLocator.click();
         logger.info("Switching to google cloud calculator page");
     }
 }
